@@ -37,6 +37,10 @@ function onStartButtonClick() {
         .catch(e => console.log(e));
 }
 
+var escape = '';
+var escape_flag = false;
+var square_flag = false;
+var send_flag = false;
 // Characteristic が変更
 function handleNotifications(event) {
     let value = event.target.value;
@@ -48,7 +52,43 @@ function handleNotifications(event) {
         if (Number("0x" + hex) <= 15){
             hex = 0+hex;
         }
-        a += hex;
+        if (square_flag){
+            let str = String.fromCharCode(Number("0x" + hex));
+            if (str.match('[0-9;]')){
+                escape += hex;
+            } else {
+                if (str.match('[A-Z]')){
+                    escape += hex;
+                    console.log("es:" + utf8_hex_string_to_string(escape));
+                    send_flag = true;
+                }
+                a += escape;
+                escape = '';
+                escape_flag = false;
+                square_flag = false;
+            }
+
+        }
+        if (hex === '1b'){
+            escape += hex;
+            escape_flag = true;
+        }
+        if (escape_flag){
+            if (hex ==='5b') {
+                escape += hex;
+                square_flag = true;
+            }
+        } else {
+            escape_flag = false;
+            square_flag = false;
+        }
+        if (!escape_flag && !square_flag) {
+            if (!send_flag) {
+                a += hex;
+            } else {
+                send_flag = false;
+            }
+        }
     }
 
     let str = utf8_hex_string_to_string(a);
