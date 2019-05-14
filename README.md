@@ -11,7 +11,7 @@ https://caniuse.com/#feat=web-bluetooth
 ## 起動方法
 ```term.html```を実行
 
-###DEMO
+### DEMO
 MLDPのserviceをもったデバイスに接続すると動きます．
 
 https://mldp-term.herokuapp.com/index.html
