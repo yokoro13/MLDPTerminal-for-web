@@ -9,7 +9,7 @@ https://caniuse.com/#feat=web-bluetooth
 でインストール
 
 ## 起動方法
-```term.html```を実行
+```index.html```を実行
 
 # DEMO
 MLDPのserviceをもったデバイスに接続すると動きます．
