@@ -56,9 +56,6 @@ function handleNotifications(event) {
         console.log(writeValue + ": " + hex);
     }
 
-    if (writeValue === '\r') {
-        writeValue = '\x1b[1G';
-    }
     if (state === 0) {
         term.write(writeValue);
         writeValue = "";
@@ -66,7 +63,7 @@ function handleNotifications(event) {
 }
 
 // MLDP に書き込む
-function writeMLDP(key: number) {
+function writeMLDP(key) {
     if (myCharacteristic != null) {
         myCharacteristic.writeValue(new Uint8Array([key]));
     }
