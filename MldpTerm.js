@@ -66,10 +66,7 @@ function handleNotifications(event) {
 }
 
 // MLDP に書き込む
-function writeMLDP(key) {
-    if ((typeof key) != "number"){
-        return;
-    }
+function writeMLDP(key: number) {
     if (myCharacteristic != null) {
         myCharacteristic.writeValue(new Uint8Array([key]));
     }
