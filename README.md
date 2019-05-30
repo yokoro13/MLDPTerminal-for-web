@@ -1,6 +1,6 @@
 # MLDPTerminal-for-web
 ## 実行可能環境
-以下を参照(※現在Androidは入力した文字が送信されない)
+以下を参照(※現在Androidは文字入力できない機種あり)
 
 https://caniuse.com/#feat=web-bluetooth
 ## 必要なmodule
