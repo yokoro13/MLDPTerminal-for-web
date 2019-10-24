@@ -9,7 +9,12 @@ let myCharacteristic;
 let state = 0;
 let writeValue = "";
 
-term.write('MLDP\r\nApp:on\r\n');
+function startMLDPApp() {
+    const message = "MLDP\r\nApp:on\r\n";
+    if (!myCharacteristic) return ;
+    const arrayBuffer = new TextEncoder().encode(message);
+    myCharacteristic.writeValue(arrayBuffer);
+}
 
 term.on('key', (key) => {
     let value;
@@ -32,6 +37,7 @@ function onStartButtonClick() {
             return myCharacteristic.startNotifications().then(_ => {
                 console.log('> Notifications started');
                 myCharacteristic.addEventListener('characteristicvaluechanged', handleNotifications);
+                startMLDPApp();
             });
         })
         .catch(e => console.log(e));
