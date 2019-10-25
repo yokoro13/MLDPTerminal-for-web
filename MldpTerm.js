@@ -16,12 +16,12 @@ function startMLDPApp() {
     myCharacteristic.writeValue(arrayBuffer);
 }
 
-term.on('key', (key) => {
+term.onKey(e => {
     let value;
-    if (key.codePointAt(0) === 0x7f) {
+    if (e.key.codePointAt(0) === 0x7f) {
         value = 0x08;
     } else {
-        value = key.codePointAt(0);
+        value = e.key.codePointAt(0);
     }
     writeMLDP(value);
 });
@@ -46,15 +46,19 @@ function onStartButtonClick() {
 // Characteristic が変更
 function handleNotifications(event) {
     let value = event.target.value;
+
+
     for (let i = 0; i < value.byteLength; i++) {
         let hex  = (value.getUint8(i).valueOf() & 0x00ff);
 
         if (state === 0){
             if (hex === 0x1b){
+                console.log("escape");
                 state = 1;
             }
         } else {
             if (String.fromCharCode(hex).match('[A-Z]')){
+                console.log("escape sequence");
                 state = 0;
             }
         }
