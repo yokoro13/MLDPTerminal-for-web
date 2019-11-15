@@ -6,7 +6,7 @@ const UUID_MLDP_DATA_PRIVATE_CHAR = "00035b03-58e6-07dd-021a-08123a000301";
 term.open(document.getElementById('terminal'));
 
 let myCharacteristic;
-let state = 0;
+let isEsc = false;
 let writeValue = "";
 
 function startMLDPApp() {
@@ -45,22 +45,22 @@ function handleNotifications(event) {
     for (let i = 0; i < value.byteLength; i++) {
         let hex  = (value.getUint8(i).valueOf() & 0x00ff);
 
-        if (state === 0){
+        if (!isEsc){
             if (hex === 0x1b){
                 console.log("escape");
-                state = 1;
+                isEsc = true;
             }
         } else {
             if (String.fromCharCode(hex).match('[A-Z]')){
                 console.log("escape sequence");
-                state = 0;
+                isEsc = false;
             }
         }
         writeValue += String.fromCharCode(hex);
         console.log(writeValue + ": " + hex.toString(16));
     }
 
-    if (state === 0) {
+    if (!isEsc) {
         term.write(writeValue);
         writeValue = "";
     }
