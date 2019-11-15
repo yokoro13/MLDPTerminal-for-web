@@ -16,28 +16,9 @@ function startMLDPApp() {
     myCharacteristic.writeValue(arrayBuffer);
 }
 
-// 一時停止
-function Sleep(milli_second){
-    let start = new Date();
-    while(new Date() - start < milli_second){}
-}
-
 term.onKey(e => {
-    let value = e.key.codePointAt(0);
-    console.log("onKey: " + value.toString(16));
-    if (value === 0x7f) {
-        value = 0x08;
-    }
-    if (value === 0x1b){
-        for (let i = 0; i < e.key.length; i++){
-            writeMLDP(e.key.codePointAt(i));
-            console.log("e.key: " + e.key.codePointAt(i).toString(16));
-            // 一度に送れないので少し待つ
-            Sleep(50);
-        }
-    } else {
-        writeMLDP(value);
-    }
+    console.log("e.key: " + e.key.codePointAt(0).toString(16));
+    writeMLDP(e.key);
 });
 
 // BLE に繋げる
@@ -76,7 +57,7 @@ function handleNotifications(event) {
             }
         }
         writeValue += String.fromCharCode(hex);
-        console.log(writeValue + ": " + hex);
+        console.log(writeValue + ": " + hex.toString(16));
     }
 
     if (state === 0) {
@@ -87,7 +68,8 @@ function handleNotifications(event) {
 
 // MLDP に書き込む
 function writeMLDP(key) {
+    let encoder = new TextEncoder('utf-8');
     if (myCharacteristic != null) {
-        myCharacteristic.writeValue(new Uint8Array([key]));
+        myCharacteristic.writeValue(encoder.encode(key));
     }
 }
