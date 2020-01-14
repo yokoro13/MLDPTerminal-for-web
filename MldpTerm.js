@@ -7,6 +7,8 @@ term.open(document.getElementById('terminal'));
 
 let myCharacteristic;
 let isEsc = false;
+let isANSI = false;
+let isTeC = false;
 let writeValue = "";
 
 function startMLDPApp() {
@@ -51,9 +53,21 @@ function handleNotifications(event) {
                 isEsc = true;
             }
         } else {
-            if (String.fromCharCode(hex).match('[A-Z]')){
-                console.log("escape sequence");
+            if(String.fromCharCode(hex) === "["){
+                isANSI = true;
+            } else if(String.fromCharCode(hex) === "?"){
+                isTeC = true;
+            } else if (isANSI && String.fromCharCode(hex).match('[A-Z]')){
+                console.log("ANSI escape sequence");
                 isEsc = false;
+                isANSI = false;
+            } else if (isTeC && String.fromCharCode(hex).match('[s]')){
+                isEsc = false;
+                isTeC = false;
+                TeCEscapeSequence(String.fromCharCode(hex));
+                console.log("TeC escape sequence");
+                writeValue = "";
+                return;
             }
         }
         writeValue += String.fromCharCode(hex);
@@ -72,4 +86,11 @@ function writeMLDP(key) {
     if (myCharacteristic != null) {
         myCharacteristic.writeValue(encoder.encode(key));
     }
+}
+
+function TeCEscapeSequence(mode) {
+    if (mode === "s") {
+        writeMLDP("\x1b?" + term.rows.toString() + "," + term.cols.toString() + "s");
+    }
+    console.log(writeValue + ": " + term.rows.toString() + "," + term.cols.toString() + "s");
 }
